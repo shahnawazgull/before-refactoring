@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNK Warehouse</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+      <a href="/">
+        <h1 class="text-3xl font-bold tracking-wide">SNK Warehouse</h1>
+      </a>
+      <nav class="space-x-6">
+        <a href="#" class="hover:underline">Dashboard</a>
+        <a href="#" class="hover:underline">Products</a>
+        <a href="#" class="hover:underline">Reports</a>
+        <a href="#" class="hover:underline">Logout</a>
+      </nav>
+    </div>
+  </header>
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
+
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold">Product Inventory</h2>
+            <a href="/add-product" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                + Add New Product
+            </a>
+        </div>
+
+        <!-- Card -->
+        <% if (products.length> 0 && products) {%>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+                <% products.forEach((p,i)=>{ %>
+                    <div class="bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden border">
+
+                        <!-- IMAGE -->
+                        <div class="relative h-56">
+                            <%if(p.stock_status === 'Out of Stock'){%>
+                            <img src="/<%= p.image %>" alt="<%= p.product_name %>"
+                                class="w-full h-full object-cover opacity-50 " />
+                                <%}else{%>
+                                    <img src="/<%= p.image %>" alt="<%= p.product_name %>"
+                                class="w-full h-full object-cover" />
+                                <%}%>
+                            <!-- STATUS BADGE -->
+                            <% if(p.stock_status==='Low Stock' ){ %>
+                                <span
+                                    class="absolute top-3 left-3 px-3 py-1 text-xs rounded-full bg-yellow-500 text-white">
+                                    Low Stock
+                                </span>
+                                <% } else if(p.stock_status==='In Stock' ){ %>
+                                    <span
+                                        class="absolute top-3 left-3 px-3 py-1 text-xs rounded-full bg-green-600 text-white">
+                                        In Stock
+                                    </span>
+                                    <% } else { %>
+                                        <span
+                                            class="absolute top-3 left-3 px-3 py-1 text-xs rounded-full bg-red-600 text-white">
+                                            Out of Stock
+                                        </span>
+                                        <% } %>
+                        </div>
+
+                        <!-- CONTENT -->
+                        <div class="p-5 space-y-3">
+                            <h3 class="text-lg font-bold text-gray-800 truncate">
+                                <%= p.product_name %>
+                            </h3>
+
+                            <p class="text-sm text-gray-500">
+                                Category: <span class="font-medium">
+                                    <%= p.category %>
+                                </span>
+                            </p>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-indigo-600 font-bold text-lg">
+                                    $<%= p.price %>
+                                </span>
+
+                                <span class="text-sm text-gray-500">
+                                    Qty: <%= p.quantity %>
+                                </span>
+                            </div>
+
+                            <p class="text-sm text-gray-600 truncate">
+                                Supplier: <%= p.supplier %>
+                            </p>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="px-5 py-4 bg-gray-50 flex justify-between items-center text-center gap-4">
+                            <a href="/edit-product/<%=p._id%>"
+                                class="px-4 w-full py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                Edit
+                            </a>
+
+                            <a href="/delete-product/<%=p._id%>"
+                                onclick="return confirm('Are you sure to delete this product?')"
+                                class="px-4 w-full py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                    <% }) %>
+
+            </div>
+
+            <% } else { %>
+                <div class="flex flex-col items-center justify-center mt-20">
+                    <svg class="w-24 h-24 text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h6v6H9V9z" />
+                    </svg>
+                    <h1 class="text-2xl font-semibold text-gray-700 mb-2">No Products Found</h1>
+                    <p class="text-gray-500 mb-4">You haven’t added any products yet. Click the button below to add your
+                        first product.</p>
+                    <a href="/add-product"
+                        class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                        Add Product
+                    </a>
+                </div>
+                <% } %>
+
+    </main>
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-300 mt-16">
+    <div class="max-w-7xl mx-auto px-6 py-8 grid md:grid-cols-3 gap-6">
+      <div>
+        <a href="/">
+          <h3 class="text-2xl font-semibold text-white mb-2">SNK Warehouse</h3>
+        </a>
+        <p class="text-lg">
+          Efficient inventory management and product tracking made simple.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-2">Quick Links</h3>
+        <ul class="space-y-2 text-md">
+          <li><a href="#" class="hover:underline">Home</a></li>
+          <li><a href="#" class="hover:underline">Products</a></li>
+          <li><a href="#" class="hover:underline">Analytics</a></li>
+          <li><a href="#" class="hover:underline">Support</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-2">Contact</h3>
+        <p class="text-md">Email: <span class="text-blue-500 underline"><a href="mailto:support@snkwarehouse.com">support@snkwarehouse.com</a></span></p>
+        <p class="text-md">Phone: +1 234 567 890</p>
+      </div>
+    </div>
+
+    <div class="text-center text-sm text-gray-400 border-t border-gray-700 py-4">
+      © <%= new Date().getFullYear() %> SNK Warehouse. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

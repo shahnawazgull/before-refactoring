@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNK Warehouse</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+      <a href="/">
+        <h1 class="text-3xl font-bold tracking-wide">SNK Warehouse</h1>
+      </a>
+      <nav class="space-x-6">
+        <a href="#" class="hover:underline">Dashboard</a>
+        <a href="#" class="hover:underline">Products</a>
+        <a href="#" class="hover:underline">Reports</a>
+        <a href="#" class="hover:underline">Logout</a>
+      </nav>
+    </div>
+  </header>
+  <!-- EDIT PRODUCT FORM -->
+  <section class="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8 mt-16">
+    <h2 class="text-2xl font-semibold mb-6 text-purple-600">Edit Product</h2>
+    <form class="grid grid-cols-1 md:grid-cols-2 gap-6" action="/edit-product/<%=p.id%>" method="post" enctype="multipart/form-data">
+      <!-- Product Name -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Product Name</label>
+        <input type="text" value="<%=p.product_name %>" name="product_name"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+      </div>
+
+      <!-- Category -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Category</label>
+        <select class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+          name="product_cat">
+          <option value="">Select category</option>
+          <option value="Electronics" <%= p.category =="Electronics"? "selected": " " %> >Electronics</option>
+          <option value="Accessories" <%= p.category == "Accessories" ? "selected": " " %> >Accessories</option>
+          <option value="Clothing" <%= p.category == "Clothing" ? "selected" : " " %> >Clothing</option>
+        </select>
+      </div>
+
+      <!-- Price -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Price ($)</label>
+        <input type="number" placeholder="0.00" name="price" value="<%=p.price %>"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+      </div>
+
+      <!-- Quantity -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Quantity</label>
+        <input type="number" placeholder="0" name="product_quantity" value="<%=p.quantity %>"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+      </div>
+
+      <!-- Supplier -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Supplier</label>
+        <input type="text" placeholder="Supplier name" name="supplier_name" value="<%=p.supplier%>"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Stock Status</label>
+        <select class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" name="stock">
+          <option value="In Stock" <%=p.stock_status == "In Stock" ? "selected" : " "%>>In Stock</option>
+          <option value="Low Stock" <%= p.stock_status =="Low Stock" ? "selected": " " %> >Low Stock</option>
+          <option value="Out of Stock" <%= p.stock_status == "Out of Stock" ? "selected": " " %> >Out of Stock</option>
+        </select>
+      </div>
+<!-- Product Image -->
+<div class="md:col-span-2">
+  <label class="block text-sm font-medium mb-2">Product Image</label>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- CURRENT IMAGE -->
+    <div class="text-center">
+      <p class="text-sm text-gray-500 mb-2">Current Image</p>
+      <img 
+        src="/images/<%= p.image %>" 
+        alt="Current Image"
+        class="mx-auto h-56 w-full max-w-sm object-cover rounded-xl shadow border"
+      />
+    </div>
+
+    <!-- CHANGE IMAGE -->
+    <div>
+      <p class="text-sm text-gray-500 mb-2 text-center">Replace Image (optional)</p>
+
+      <div class="relative border-2 border-dashed border-gray-300 rounded-2xl p-6 text-center hover:border-purple-500 transition">
+        
+        <img id="editPreview" 
+             class="hidden mx-auto mb-4 h-40 w-full max-w-sm object-cover rounded-xl shadow" />
+
+        <div id="editPlaceholder" class="space-y-3">
+          <svg class="w-12 h-12 text-purple-500 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5"
+               viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 16l4-4a3 3 0 014.243 0L15 16m0 0l4-4a3 3 0 014.243 0L23 16M12 12V3" />
+          </svg>
+          <p class="text-gray-600 font-medium">Click or drag image to replace</p>
+          <p class="text-xs text-gray-400">PNG, JPG up to 5MB</p>
+        </div>
+
+        <input type="file"
+               name="image"
+               accept="image/*"
+               onchange="previewEditImage(this)"
+               class="absolute inset-0 opacity-0 cursor-pointer" />
+      </div>
+    </div>
+
+  </div>
+</div>
+
+      <!-- Description -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium mb-1">Product Description</label>
+        <textarea rows="4" placeholder="Enter product description" name="product_desc"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"><%=p.description%></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div class="md:col-span-2 flex justify-end gap-4">
+        <a href="/" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+          Cancel
+        </a >
+        <button class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+          Update Product
+        </button>
+      </div>
+
+    </form>
+  </section>
+  <script>
+  function previewEditImage(input) {
+    const file = input.files[0];
+    const preview = document.getElementById('editPreview');
+    const placeholder = document.getElementById('editPlaceholder');
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+</script>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-300 mt-16">
+    <div class="max-w-7xl mx-auto px-6 py-8 grid md:grid-cols-3 gap-6">
+      <div>
+        <a href="/">
+          <h3 class="text-2xl font-semibold text-white mb-2">SNK Warehouse</h3>
+        </a>
+        <p class="text-lg">
+          Efficient inventory management and product tracking made simple.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-2">Quick Links</h3>
+        <ul class="space-y-2 text-md">
+          <li><a href="#" class="hover:underline">Home</a></li>
+          <li><a href="#" class="hover:underline">Products</a></li>
+          <li><a href="#" class="hover:underline">Analytics</a></li>
+          <li><a href="#" class="hover:underline">Support</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-2">Contact</h3>
+        <p class="text-md">Email: <span class="text-blue-500 underline"><a href="mailto:support@snkwarehouse.com">support@snkwarehouse.com</a></span></p>
+        <p class="text-md">Phone: +1 234 567 890</p>
+      </div>
+    </div>
+
+    <div class="text-center text-sm text-gray-400 border-t border-gray-700 py-4">
+      © <%= new Date().getFullYear() %> SNK Warehouse. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>
